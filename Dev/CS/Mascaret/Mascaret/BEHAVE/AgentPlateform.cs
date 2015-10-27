@@ -29,7 +29,12 @@ namespace Mascaret
             get { return organisations; }
             set { organisations = value; }
         }
-
+        private OrganisationalEntity activeOrganisation = null;
+        public OrganisationalEntity ActiveOrgansation
+        {
+            get { return activeOrganisation; }
+            set { activeOrganisation = value; }
+        }
         /*	 
             private List<ExternalCommunicationManager> communicationManager = new List<ExternalCommunicationManager>();
             public List<ExternalCommunicationManager> CommunicationManager

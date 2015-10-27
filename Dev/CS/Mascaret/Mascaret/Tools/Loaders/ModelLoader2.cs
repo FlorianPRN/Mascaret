@@ -62,7 +62,8 @@ namespace Mascaret
 
     protected List<string> _stereoPedagogicalScenario = new List<string>();
 
-    protected Dictionary<string, List<String>> _otherStereo = new Dictionary<string,List<string>>();
+   
+        protected Dictionary<string, List<String>> _otherStereo = new Dictionary<string,List<string>>();
     protected Dictionary<string, string> _valueTypeToUnit = new Dictionary<string, string>();
     protected Dictionary<string, Unit> _units = new Dictionary<string, Unit>();
     protected Dictionary<string, string> _unitRefs = new Dictionary<string, string>();
@@ -705,7 +706,15 @@ namespace Mascaret
                     else
                         procedure = new Procedure(childName);
 					procedure.Activity=activity;
-					organisation.addProcedure(procedure);
+
+                     string stereo = getStereotype(childId);
+                     MascaretApplication.Instance.VRComponentFactory.Log("procedure;;;;;;;;;;;;;;;;;;;;;;;;;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + childName + " : " + childId + " " + stereo);
+                     if (stereo != "")
+                      {
+                             procedure.Stereotype = stereo;
+                        }
+
+                        organisation.addProcedure(procedure);
 					_idBehaviors.Add(childId,activity);
 				}
 			}
@@ -1847,6 +1856,7 @@ namespace Mascaret
                 else
                     _stereoPedagogicalScenario.Add(elementBase);
             }
+
             else if (child.Name.LocalName.Contains("Entity"))
             {
 				if (classBase!=null)
@@ -1876,8 +1886,16 @@ namespace Mascaret
                     XAttribute attrS =(XAttribute) child.Attribute("base_Property");
                     if (attrS != null)
                         _otherStereo[child.Name.LocalName].Add(attrS.Value);
-                    
-                }
+
+                        XAttribute attrO = (XAttribute)child.Attribute("base_Operation");
+                        if (attrO != null)
+                            _otherStereo[child.Name.LocalName].Add(attrO.Value);
+
+                        XAttribute attrA = (XAttribute)child.Attribute("base_Activity");
+                        if (attrA != null)
+                            _otherStereo[child.Name.LocalName].Add(attrA.Value);
+
+                    }
                 else
                 {
                    // MascaretApplication.Instance.VRComponentFactory.Log("NEW Prop");
@@ -1889,8 +1907,22 @@ namespace Mascaret
                         _otherStereo.Add(child.Name.LocalName, new List<string>());
                         _otherStereo[child.Name.LocalName].Add(attrS.Value);
                     }
-                    
-                }
+                        XAttribute attrO = (XAttribute)child.Attribute("base_Operation");
+                        if (attrO != null)
+                        {
+                            MascaretApplication.Instance.VRComponentFactory.Log("---> " + child.Name.LocalName + attrO.Value);
+                            _otherStereo.Add(child.Name.LocalName, new List<string>());
+                            _otherStereo[child.Name.LocalName].Add(attrO.Value);
+                        }
+                        XAttribute attrA = (XAttribute)child.Attribute("base_Activity");
+                        if (attrA != null)
+                        {
+                            MascaretApplication.Instance.VRComponentFactory.Log("---> " + child.Name.LocalName + attrA.Value);
+                            _otherStereo.Add(child.Name.LocalName, new List<string>());
+                            _otherStereo[child.Name.LocalName].Add(attrA.Value);
+                        }
+
+                    }
             }
 		}
 	}
@@ -2069,9 +2101,16 @@ namespace Mascaret
 			{
 				string opid;
 				opid = opNode.Attribute("idref").Value;
-                //MascaretApplication.Instance.logfile.WriteLine("Operation ID : " + opid); MascaretApplication.Instance.logfile.Flush();
+                    //MascaretApplication.Instance.logfile.WriteLine("Operation ID : " + opid); MascaretApplication.Instance.logfile.Flush();
+                    string stereo = getStereotype(opid);
+                    MascaretApplication.Instance.VRComponentFactory.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + " : " + opid + " " + stereo);
+                    if (stereo != "")
+                    {
 
-				if (_idOperations.ContainsKey(opid))
+                        an.Stereotype = stereo;
+                    }
+
+                    if (_idOperations.ContainsKey(opid))
 					act.Operation = _idOperations[opid];
 				else
 				{
@@ -2080,8 +2119,17 @@ namespace Mascaret
 				}
 			} else 
 			{
-				string opid;
-				opid = node.Attribute("operation").Value;
+                    string opid;
+                    opid = node.Attribute("operation").Value;
+                    // MascaretApplication.Instance.logfile.WriteLine("Operation ID : " + opid); MascaretApplication.Instance.logfile.Flush();
+                    string stereo = getStereotype(opid);
+                    MascaretApplication.Instance.VRComponentFactory.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + name + " : " + opid + " " + stereo);
+                    if (stereo != "")
+                    {
+
+                        an.Stereotype = stereo;
+                    }
+              
                // MascaretApplication.Instance.logfile.WriteLine("Operation ID : " + opid); MascaretApplication.Instance.logfile.Flush();
 
                 if (_idOperations.ContainsKey(opid))
@@ -2548,7 +2596,7 @@ namespace Mascaret
     }
 
 
-    public bool isStereotypedUnit(XElement node)
+        public bool isStereotypedUnit(XElement node)
     {
         // Bouml preserved body begin 0001FFE7
 

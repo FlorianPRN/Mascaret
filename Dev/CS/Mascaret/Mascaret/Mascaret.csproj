@@ -31,7 +31,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <NuGetPackageImportStamp>e2b52340</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -59,6 +60,9 @@
     <Reference Include="Antlr4.Runtime.net35">
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net35-client\Antlr4.Runtime.net35.dll</HintPath>
     </Reference>
+    <Reference Include="NLP">
+      <HintPath>..\..\..\..\..\DialogueManagement\NLP\NLP\bin\Debug\NLP.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -75,11 +79,34 @@
     <Compile Include="BEHAVE\AID.cs" />
     <Compile Include="BEHAVE\AssemblyInfo.cs" />
     <Compile Include="BEHAVE\BehaviorRealizer.cs" />
+    <Compile Include="BEHAVE\CallGlobalActivityAction.cs" />
+    <Compile Include="BEHAVE\CallGlobalActivityExecution.cs" />
     <Compile Include="BEHAVE\CallProcedureAction.cs" />
     <Compile Include="BEHAVE\CallProcedureBehaviorExecution.cs" />
     <Compile Include="BEHAVE\BehaviorPlanner.cs" />
+    <Compile Include="BEHAVE\ConversationalBehavior.cs" />
+    <Compile Include="BEHAVE\ConversationalBehaviourExecution.cs" />
+    <Compile Include="CollaborativeDialogueManagement\NaturalLanguageDialogueGenerator.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\ConversationOperation.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\ConversationPlan.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\ConversationPlanExecution.cs" />
+    <Compile Include="CollaborativeDialogueManagement\ConversationalDialogueManager.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\EasyDialogueBehavior\DialogueFile.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\EasyDialogueBehavior\DialogueLine.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\EasyDialogueBehavior\EasyDialogueFile.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\EasyDialogueBehavior\EasyDialogueManager.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\EasyDialogueBehavior\EasyDM.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\EasyDialogueBehavior\EasyFile.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\Plan.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\PlanLibrary.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\ThreadedMailBox.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\UtteranceMailBox.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Conversation\UtteranceMessageBox.cs" />
     <Compile Include="BEHAVE\CyclicBehaviorExecution.cs" />
+    <Compile Include="BEHAVE\DialogueInterface.cs" />
     <Compile Include="BEHAVE\ExternalCommunicationManager.cs" />
+    <Compile Include="BEHAVE\GlobalActivity.cs" />
+    <Compile Include="BEHAVE\GlobalActivityBehavior.cs" />
     <Compile Include="BEHAVE\KnowledgeBase.cs" />
     <Compile Include="BEHAVE\Mailbox.cs" />
     <Compile Include="BEHAVE\OneShotBehaviorExecution.cs" />
@@ -96,6 +123,43 @@
     <Compile Include="BEHAVE\RoleClass.cs" />
     <Compile Include="BEHAVE\SimpleBehaviorExecution.cs" />
     <Compile Include="BEHAVE\SimpleCommunicationBehavior.cs" />
+    <Compile Include="CollaborativeDialogueManagement\ConversationalAgent.cs" />
+    <Compile Include="CollaborativeDialogueManagement\DialogueActInterpreter.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Cell.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Component.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\Condition.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\Equals.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\FirstOnAgenda.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\HasNoExpectation.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\IsBelief.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\IsExpected.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\IsNotABelief.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\isNotIntegratedMove.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\IsNotMutualBelief.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\IsTopOfAgendaEmpty.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\MutualBelief.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Conditions\Precondition.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\DefinedConstrants.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\DialogueAct.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Effect.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\InformationState.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\InformationStateVariables.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\IsMutualBelief.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\ParseInformationState.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Property.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\RuleFactory.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Rules\AgentDialogueActRuleFactory.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\SelectRule.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\SemanticPredicate.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\Update.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\UpdateRule.cs" />
+    <Compile Include="CollaborativeDialogueManagement\InformationState\UtteranceInterpreter.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Predicate.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Program.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Services.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Unify.cs" />
+    <Compile Include="CollaborativeDialogueManagement\UtteranceMessage.cs" />
+    <Compile Include="CollaborativeDialogueManagement\Variable.cs" />
     <Compile Include="HAVE\Body.cs" />
     <Compile Include="HAVE\BodyClass.cs" />
     <Compile Include="HAVE\EmbodiedAgent.cs" />
@@ -260,6 +324,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Antlr4>
   </ItemGroup>
+  <ItemGroup />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Activez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est le suivant : {0}.</ErrorText>
@@ -269,7 +334,10 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetPath)" "D:\Mukesh\Work\INSA\EAST\EAST\Assets\Plugins\Mascaret\$(TargetFileName)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

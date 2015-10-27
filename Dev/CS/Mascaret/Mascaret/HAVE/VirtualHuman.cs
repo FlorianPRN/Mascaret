@@ -12,10 +12,18 @@ namespace Mascaret
         //SpeechData currentSD;
 
 
+        private ConversationalDialogueManager dialogueManager;
+        public ConversationalDialogueManager DialogueManager
+        {
+            get { return dialogueManager; }
+            set { dialogueManager = value; }
+        }
+
         public VirtualHuman(AgentPlateform ap, string name, AgentClass agentclass)
             : base(ap, name, agentclass)
         {
             System.Console.WriteLine("VIRTUAL HUMAN");
+            dialogueManager = new ConversationalDialogueManager(this);
         }
 
         public bool playAnimation(string animationName, int sens, double animationSpeed, bool cycle)// int sens = 1, double animationSpeed = 1.0, bool cycle = false

@@ -4,15 +4,16 @@ using System.IO;
 using System.Xml.Linq;
 using System.Collections;
 using System.Collections.Generic;
-
+using NLP;
 
 namespace Mascaret
 {
-
+    
     public delegate void LogHandler(string message);
 
     public class MascaretApplication
     {
+        DialogueInterpreter D = null;
         protected static MascaretApplication instance = null;
 
         public static MascaretApplication Instance

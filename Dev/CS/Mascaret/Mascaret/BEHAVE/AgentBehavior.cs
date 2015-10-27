@@ -44,6 +44,12 @@ namespace Mascaret
                 ActionListenerBehavior alb = new ActionListenerBehavior((Behavior)this, host, p);
                 return alb as BehaviorExecution;
             }
+            else if (name == "ConversationalBehavior")
+            {
+                ConversationalBehavior pb = new ConversationalBehavior((Behavior)this, host, p);
+                pb.Interval = 0.5;
+                return pb;
+            }
             else
             {
                 //BehaviorInitDeleterFunc operations
