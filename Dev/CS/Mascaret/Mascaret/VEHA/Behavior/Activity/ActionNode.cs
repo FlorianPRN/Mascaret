@@ -45,67 +45,77 @@ namespace Mascaret
                // file.WriteLine("Le noeud " + name + " n'a pas d'action associée!!!"); file.Flush();
                 return;
             }
-
-            Dictionary<string, ValueSpecification> param = new Dictionary<string, ValueSpecification>();
-            if (action.Kind == "SendSignal")
+            if (Stereotype == "Communication")
             {
-                
-                if (((SendSignalAction)action).Target == null)
-                {
-                    foreach (ActivityEdge currentEdge in Outgoing)
-                    {
-                        if (currentEdge.Target.Kind == "object")
-                        {
-                            if (affectations.ContainsKey(currentEdge.Target.name))
-                            {
-                                System.Console.WriteLine("Sending signal to : " + currentEdge.Target.name);
-                                SendSignalAction ssAct = (SendSignalAction)action;
-                                ssAct.Target = new SendSignalTarget();
-                                ssAct.Target.target = affectations[currentEdge.Target.name];
-                            }
-
-                            else
-                            {
-                                System.Console.WriteLine("affectation of " + currentEdge.Target.name + " not found");
-                            }
-
-                        }
-                    }
-                }
+                MascaretApplication.Instance.VRComponentFactory.Log(name + ":+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++stereotype: " + Stereotype);
+                VirtualHuman vh = (VirtualHuman)host;
+                currentExecution = vh.DialogueManager.addConversationPlanToExecutue(this.name);
             }
-            if (action.Kind == "CallOperation")
+            else
             {
-               // file.WriteLine("Executing Call operation" + action.name + " " + ((CallOperationAction)action).Operation.getFullName()); file.Flush();
 
-                if (((CallOperationAction)action).isDynamic())
+                Dictionary<string, ValueSpecification> param = new Dictionary<string, ValueSpecification>();
+                if (action.Kind == "SendSignal")
                 {
-                    param = ((CallOperationAction)action).getParameters();
 
-                }
-                else
-                {
-                    foreach (InputPin currentPin in action.InputPins)
+                    if (((SendSignalAction)action).Target == null)
                     {
-
-                        string paramName = currentPin.getIncomingObjectNode()[0].name;
-                      //  file.WriteLine(" Looking for : " + paramName); file.Flush();
-                        if (!affectations.ContainsKey(currentPin.getIncomingObjectNode()[0].name))
+                        foreach (ActivityEdge currentEdge in Outgoing)
                         {
-                    //        file.WriteLine(((CallOperationAction)action).Operation.getFullName() + " from " + action.Owner.name + " MISS " + currentPin.getIncomingObjectNode()[0].name); file.Flush();
+                            if (currentEdge.Target.Kind == "object")
+                            {
+                                if (affectations.ContainsKey(currentEdge.Target.name))
+                                {
+                                    System.Console.WriteLine("Sending signal to : " + currentEdge.Target.name);
+                                    SendSignalAction ssAct = (SendSignalAction)action;
+                                    ssAct.Target = new SendSignalTarget();
+                                    ssAct.Target.target = affectations[currentEdge.Target.name];
+                                }
+
+                                else
+                                {
+                                    System.Console.WriteLine("affectation of " + currentEdge.Target.name + " not found");
+                                }
+
+                            }
                         }
-                        InstanceValue val = new InstanceValue(affectations[currentPin.getIncomingObjectNode()[0].name]);
-                    //    file.WriteLine("..... Trouve " + val.ToString()); file.Flush();
-                        param.Add(currentPin.name, val);
                     }
                 }
+                if (action.Kind == "CallOperation")
+                {
+                    // file.WriteLine("Executing Call operation" + action.name + " " + ((CallOperationAction)action).Operation.getFullName()); file.Flush();
 
+                    if (((CallOperationAction)action).isDynamic())
+                    {
+                        param = ((CallOperationAction)action).getParameters();
+
+                    }
+                    else
+                    {
+                        foreach (InputPin currentPin in action.InputPins)
+                        {
+
+                            string paramName = currentPin.getIncomingObjectNode()[0].name;
+                            //  file.WriteLine(" Looking for : " + paramName); file.Flush();
+                            if (!affectations.ContainsKey(currentPin.getIncomingObjectNode()[0].name))
+                            {
+                                //        file.WriteLine(((CallOperationAction)action).Operation.getFullName() + " from " + action.Owner.name + " MISS " + currentPin.getIncomingObjectNode()[0].name); file.Flush();
+                            }
+                            InstanceValue val = new InstanceValue(affectations[currentPin.getIncomingObjectNode()[0].name]);
+                            //    file.WriteLine("..... Trouve " + val.ToString()); file.Flush();
+                            param.Add(currentPin.name, val);
+                        }
+                    }
+
+                }
                 if (Activity != null)
                 {
                     //	action.Context(Activity.Context);
                 }
 
+
+                currentExecution = BehaviorScheduler.Instance.executeBehavior(action, host, param, sync);
             }
-            currentExecution = BehaviorScheduler.Instance.executeBehavior(action, host, param, sync);
         }
 
         public void stop()
