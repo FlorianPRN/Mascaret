@@ -17,7 +17,7 @@ namespace Mascaret
         public override ValueSpecification createValueFromString(string str)
         {
             ValueSpecification valueSpec = null;
-            if (type == "real" || type == "double")
+            if (type == "real" || type == "double" || type == "float")
             {
                 valueSpec = new LiteralReal(str);
             }

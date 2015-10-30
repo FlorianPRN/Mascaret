@@ -31,8 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
     <NuGetPackageImportStamp>e2b52340</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -42,7 +41,7 @@
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>2</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -334,7 +333,7 @@
   </Target>
   <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "D:\Mukesh\Work\INSA\EAST\EAST\Assets\Plugins\Mascaret\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetDir)*" "$(SolutionDir)Assets\Plugins\Mascaret\*"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

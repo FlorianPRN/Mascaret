@@ -1303,15 +1303,17 @@ namespace Mascaret
                 MascaretApplication.Instance.VRComponentFactory.Log("ARGUMENT PIN ################################");
 
                 XAttribute att = pins.Attribute("{http://www.omg.org/spec/XMI/20131001}type");
-                if (att == null) att = pins.Attribute("{http://schema.omg.org/spec/XMI/2.1}type");
+                if (att == null)
+                        att = pins.Attribute("{http://schema.omg.org/spec/XMI/2.1}type");
 
                 if (att != null)
-                MascaretApplication.Instance.VRComponentFactory.Log(att.Value);
+                    MascaretApplication.Instance.VRComponentFactory.Log(att.Value);
                 if (att != null && att.Value == "uml:ValuePin")
 				{
 	                ValuePin valuePin = new ValuePin();
                     XAttribute attID = pins.Attribute("{http://schema.omg.org/spec/XMI/2.1}id");
-                    if (attID == null) attID = pins.Attribute("{http://www.omg.org/spec/XMI/20131001}id");
+                    if (attID == null)
+                            attID = pins.Attribute("{http://www.omg.org/spec/XMI/20131001}id");
 
 	                string id = attID.Value;
 					string name = pins.Attribute("name").Value;
@@ -1321,6 +1323,11 @@ namespace Mascaret
 
                     string strType = "";
                     XElement typeNode = pins.Element("type");
+                    if (typeNode == null)
+                    {
+                            // Check if it's an attribute
+                            string typeId = pins.Attribute("type").Value;
+                    }
                     XAttribute attr = (XAttribute)typeNode.Attribute("href");
                     if (attr != null) strType = attr.Value.Substring(attr.Value.IndexOf("#") + 1);
 
@@ -1334,7 +1341,7 @@ namespace Mascaret
                     if (attrV != null) strValue = attrV.Value;
 
                     MascaretApplication.Instance.VRComponentFactory.Log("Valeur : " + strValue);
-                    valuePin.ValueSpec = new LiteralInteger(strValue);
+                    valuePin.ValueSpec = attributeType.createValueFromString(strValue);
 
 	                /*Classifier ressourceType = getObjectNodeType(pins);
 	                if(ressourceType != null)
