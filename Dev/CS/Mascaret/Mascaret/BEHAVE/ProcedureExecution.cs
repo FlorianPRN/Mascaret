@@ -711,7 +711,7 @@ namespace Mascaret
                 ActionNode aNode = (ActionNode)(token.currentLocation);
                 if (actionIsCurrentlyRunning(aNode))
                 {
-                    System.Console.WriteLine(" ACTION is RUNNING : " + aNode.Action.name);
+                    //System.Console.WriteLine(" ACTION is RUNNING : " + aNode.Action.name);
                     //token busy...
                     return false;
                 }
