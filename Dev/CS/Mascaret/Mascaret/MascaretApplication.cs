@@ -56,23 +56,29 @@ namespace Mascaret
         }
 
         public virtual void parse(XElement root, bool loadAll)
-        {
+        { 
             XElement appliNode = root.Element("ApplicationParameters");
             XElement actnode = root.Element("Actors");
             XElement orgNode = root.Element("Organisations");
 
+            if (agentPlateform == null)
             {
-                if (agentPlateform == null)
-                {
-                    this.VRComponentFactory.Log("Agent Plateform");
-                    // Parametres par defaut de l'applie ....
-                    string ressourceDir = "HTTPServerBaseDir";
-                    agentPlateform = new AgentPlateform("localhost", 8080, ressourceDir, false);
-                    agent = new Agent(agentPlateform, "HTTPManager", null, "");
-                    agent.addBehavior("SimpleCommunicationBehavior", 0.2, true);
-                    agentPlateform.addAgent(agent);
-                }
-     
+                this.VRComponentFactory.Log("Agent Plateform");
+                // Parametres par defaut de l'applie ....
+                string ressourceDir = "HTTPServerBaseDir";
+                agentPlateform = new AgentPlateform("localhost", 8080, ressourceDir, false);
+                agent = new Agent(agentPlateform, "HTTPManager", null, "");
+                agent.addBehavior("SimpleCommunicationBehavior", 0.2, true);
+                agentPlateform.addAgent(agent);
+            }
+
+            XElement modelNode = root.Element("Model");
+            if (modelNode != null)
+            {
+                // Read the url
+                string urlModel = modelNode.Attribute("url").Value;
+                if (model == null)
+                    model = parseModel(baseDir + "/" + urlModel);
             }
 
             foreach (XElement child in root.Elements())
@@ -110,42 +116,40 @@ namespace Mascaret
             XDocument parser = XDocument.Parse(s);
             XElement root = parser.Root;
 
-        //    Model model;
-            XElement modelNode = root.Element("Model");
-            if (modelNode != null)
+            if (loadAll)
             {
-                string urlModel = modelNode.Attribute("url").Value;
+                env = new Environment(model);
+                env.Url = url;
+                model.addEnvironment(env);
 
-               /// StreamWriter file = new StreamWriter("log2.txt");
-               // file.WriteLine(" URL : " + url + " : " + BaseDir + "/" + urlModel);
-              //  file.Flush();
-              //  file.Close();
-                if (model == null) model = parseModel(BaseDir+"/"+urlModel);
-                
-               // if (model.Environments.ContainsKey(url))
-              //  {
-               //     env = model.Environments[url];
-              //  }
-              //  else
-               if (loadAll) {
-                    env = new Environment(model);
-                    env.Url = url;
-                    model.addEnvironment(env);
+                InstanceLoader instanceLoader = new InstanceLoader(agentPlateform, env, BaseDir + "/" + url, true);
 
-                    InstanceLoader instanceLoader = new InstanceLoader(agentPlateform, env, BaseDir+"/"+url, true);
+                if (actNode != null)
+                    instanceLoader.parseInstances(agentPlateform, env, actNode.Attribute("url").Value, true);
 
-                    System.Console.WriteLine("SIZE of env map " + model.Environments.Count + " of model :" + model.name);
-
-                    if (actNode != null)
-                        instanceLoader.parseInstances(agentPlateform, env, actNode.Attribute("url").Value, true);
-
-                    if (orgNode != null)
-                        instanceLoader.parseInstances(agentPlateform, env, orgNode.Attribute("url").Value, true);
-                }
-                
+                if (orgNode != null)
+                    instanceLoader.parseInstances(agentPlateform, env, orgNode.Attribute("url").Value, true);
             }
-            else
-                env = null;
+            ////    Model model;
+            //XElement modelNode = root.Element("Model");
+            //if (modelNode != null)
+            //{
+            //    string urlModel = modelNode.Attribute("url").Value;
+
+            //   /// StreamWriter file = new StreamWriter("log2.txt");
+            //   // file.WriteLine(" URL : " + url + " : " + BaseDir + "/" + urlModel);
+            //  //  file.Flush();
+            //  //  file.Close();
+            //    if (model == null) model = parseModel(BaseDir+"/"+urlModel);
+                
+            //   // if (model.Environments.ContainsKey(url))
+            //  //  {
+            //   //     env = model.Environments[url];
+            //  //  }
+            //  //  else              
+            //}
+            //else
+            //    env = null;
             return env;
         }
 
