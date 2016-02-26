@@ -67,6 +67,7 @@ namespace Mascaret
 
         public Dictionary<String, ValueSpecification> parameters;
 
+        protected MascaretApplication appli;
 
         public List<ValueSpecification> result;
 
@@ -92,6 +93,7 @@ namespace Mascaret
             isSuspended = false;
             parameters = p;
             result = new List<ValueSpecification>();
+            appli = MascaretApplication.Instance;
         }
 
         public BehaviorExecution()

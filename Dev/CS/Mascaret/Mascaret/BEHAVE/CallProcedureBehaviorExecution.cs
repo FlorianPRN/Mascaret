@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Mascaret
 {
@@ -38,18 +39,51 @@ namespace Mascaret
 
         public override double execute(double dt)
         {
-            
-            MascaretApplication appli = MascaretApplication.Instance;
-
-            //bool found = false;
-            OrganisationalEntity askedOrg = null;
-            Procedure askedProc = null;
-            Role askedRole = null;
-
             List<OrganisationalEntity> orgs = appli.AgentPlateform.Organisations;
+            appli.VRComponentFactory.Log("CallProcedure");
+            
+            foreach (OrganisationalEntity orgEntity in orgs)
+            {
+                appli.VRComponentFactory.Log(" Org " + orgEntity.name + " ?");
+                OrganisationalStructure os = orgEntity.Structure;
+                List<Procedure> procs = os.Procedures;
 
-            appli.VRComponentFactory.Log("CallProcedure"); 
+                Procedure p = procs.Where(proc => proc.name.Equals(action.Procedure)).First();
+                if (p != null)
+                {
+                    appli.VRComponentFactory.Log("Procedure " + p.name + " found");
+                    List<RoleAssignement> goodAssigns = orgEntity.RoleAssignement.Where(
+                        rAssign => appli.AgentPlateform.Agents[rAssign.Agent.toString()].getBehaviorExecutingByName("ProceduralBehavior") != null
+                        ).ToList();
+                    foreach (RoleAssignement gAssign in goodAssigns)
+                    {
+                        AgentBehaviorExecution pbehavior = appli.AgentPlateform.Agents[gAssign.Agent.toString()].getBehaviorExecutingByName("ProceduralBehavior");
+                        ProceduralBehavior procBehave = (ProceduralBehavior)(pbehavior);
+                        procBehave.pushProcedureToDo(p, orgEntity, gAssign.Role, new Dictionary<string, ValueSpecification>());
+                    }
 
+                    /*
+                    List<RoleAssignement> assigns = orgEntity.RoleAssignement;
+
+                    appli.VRComponentFactory.Log("Assigns : " + assigns.Count);
+                    foreach (RoleAssignement rAssign in assigns)
+                    {
+                        Agent agt = appli.AgentPlateform.Agents[rAssign.Agent.toString()];
+
+                        appli.VRComponentFactory.Log("Role : " + rAssign.Role.name + " == " + agt.name);
+                        AgentBehaviorExecution pbehavior = agt.getBehaviorExecutingByName("ProceduralBehavior");
+
+                        if (pbehavior != null)
+                        {
+                            appli.VRComponentFactory.Log("Procedure launched for " + agt.name);
+                            ProceduralBehavior procBehave = (ProceduralBehavior)(pbehavior);
+                            procBehave.pushProcedureToDo(p, orgEntity, rAssign.Role, new Dictionary<string, ValueSpecification>());
+                        }
+                    }
+                    */
+                }
+            }
+            /*
             for (int iOrg = 0; iOrg < orgs.Count; iOrg++)
             {
                 appli.VRComponentFactory.Log(" Org " + orgs[iOrg].name + " ?");
@@ -91,8 +125,9 @@ namespace Mascaret
                         }
                     }
                 }
+                
             }
-         
+         */
             return 0;
         }
     }
