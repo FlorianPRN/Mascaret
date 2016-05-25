@@ -538,10 +538,9 @@ namespace Mascaret
             for (int i = 0; i < activeTokens.Count; ++i)
             {
                 if ((activeTokens[i].outgoingEdge != null) || (activeTokens[i].loopNodeStack.Count > 0))
-                {
                     reachableNodesStillExist = true;
-                    break;
-                }
+                if (activeTokens[i].currentLocation.Kind == "final")
+                    return true;
             }
 
             return (!reachableNodesStillExist) && actionsRunning.Count == 0;

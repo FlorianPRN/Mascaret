@@ -41,6 +41,7 @@ namespace Mascaret
         {
             List<OrganisationalEntity> orgs = appli.AgentPlateform.Organisations;
             appli.VRComponentFactory.Log("CallProcedure");
+            // Florian version
             
             foreach (OrganisationalEntity orgEntity in orgs)
             {
@@ -48,41 +49,27 @@ namespace Mascaret
                 OrganisationalStructure os = orgEntity.Structure;
                 List<Procedure> procs = os.Procedures;
 
-                Procedure p = procs.Where(proc => proc.name.Equals(action.Procedure)).First();
-                if (p != null)
+                List<Procedure> procsNeed = procs.Where(proc => proc.name.Equals(action.Procedure)).ToList();
+                if (procsNeed != null && procsNeed.Count > 0)
                 {
-                    appli.VRComponentFactory.Log("Procedure " + p.name + " found");
-                    List<RoleAssignement> goodAssigns = orgEntity.RoleAssignement.Where(
-                        rAssign => appli.AgentPlateform.Agents[rAssign.Agent.toString()].getBehaviorExecutingByName("ProceduralBehavior") != null
-                        ).ToList();
-                    foreach (RoleAssignement gAssign in goodAssigns)
+                    Procedure p = procsNeed.First();
+                    if (p != null)
                     {
-                        AgentBehaviorExecution pbehavior = appli.AgentPlateform.Agents[gAssign.Agent.toString()].getBehaviorExecutingByName("ProceduralBehavior");
-                        ProceduralBehavior procBehave = (ProceduralBehavior)(pbehavior);
-                        procBehave.pushProcedureToDo(p, orgEntity, gAssign.Role, new Dictionary<string, ValueSpecification>());
-                    }
-
-                    /*
-                    List<RoleAssignement> assigns = orgEntity.RoleAssignement;
-
-                    appli.VRComponentFactory.Log("Assigns : " + assigns.Count);
-                    foreach (RoleAssignement rAssign in assigns)
-                    {
-                        Agent agt = appli.AgentPlateform.Agents[rAssign.Agent.toString()];
-
-                        appli.VRComponentFactory.Log("Role : " + rAssign.Role.name + " == " + agt.name);
-                        AgentBehaviorExecution pbehavior = agt.getBehaviorExecutingByName("ProceduralBehavior");
-
-                        if (pbehavior != null)
+                        appli.VRComponentFactory.Log("Procedure " + p.name + " found");
+                        List<RoleAssignement> goodAssigns = orgEntity.RoleAssignement.Where(
+                            rAssign => appli.AgentPlateform.Agents[rAssign.Agent.toString()].getBehaviorExecutingByName("ProceduralBehavior") != null
+                            ).ToList();
+                        foreach (RoleAssignement gAssign in goodAssigns)
                         {
-                            appli.VRComponentFactory.Log("Procedure launched for " + agt.name);
+                            AgentBehaviorExecution pbehavior = appli.AgentPlateform.Agents[gAssign.Agent.toString()].getBehaviorExecutingByName("ProceduralBehavior");
                             ProceduralBehavior procBehave = (ProceduralBehavior)(pbehavior);
-                            procBehave.pushProcedureToDo(p, orgEntity, rAssign.Role, new Dictionary<string, ValueSpecification>());
+                            procBehave.pushProcedureToDo(p, orgEntity, gAssign.Role, new Dictionary<string, ValueSpecification>());
                         }
                     }
-                    */
                 }
             }
+            
+            // Original version
             /*
             for (int iOrg = 0; iOrg < orgs.Count; iOrg++)
             {
@@ -92,22 +79,20 @@ namespace Mascaret
                     appli.VRComponentFactory.Log("Org : " + orgs[iOrg].name + " found");
                     OrganisationalStructure os = orgs[iOrg].Structure;
                     List<Procedure> procs = os.Procedures;
-                    askedOrg = orgs[iOrg];
-
+                    var askedOrg = orgs[iOrg];
                     for (int iP = 0; iP < procs.Count; iP++)
                     {
                         if (procs[iP].name == action.Procedure)
                         {
                             appli.VRComponentFactory.Log("Procedure " + procs[iP].name + " found");
-                            askedProc = procs[iP];
+                            var askedProc = procs[iP];
                             List<RoleAssignement> assigns = orgs[iOrg].RoleAssignement;
 
                             appli.VRComponentFactory.Log("Assigns : " + assigns.Count);
                             for (int iAss = 0; iAss < assigns.Count; iAss++)
                             {
                                 Agent agt = appli.AgentPlateform.Agents[assigns[iAss].Agent.toString()];
-                                askedRole = assigns[iAss].Role;
-
+                                var askedRole = assigns[iAss].Role;
                                 appli.VRComponentFactory.Log("Role : " + assigns[iAss].Role.name + " == " + agt.name);
 
                                 AgentBehaviorExecution pbehavior = agt.getBehaviorExecutingByName("ProceduralBehavior");
@@ -127,7 +112,7 @@ namespace Mascaret
                 }
                 
             }
-         */
+            */
             return 0;
         }
     }
