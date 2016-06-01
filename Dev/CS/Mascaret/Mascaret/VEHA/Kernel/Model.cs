@@ -129,6 +129,8 @@ namespace Mascaret
 
             MascaretPrimitiveType realPrimitiveType = new MascaretPrimitiveType("real");
             basicTypes.Add("real", realPrimitiveType);
+            basicTypes.Add("float", realPrimitiveType);
+            basicTypes.Add("double", realPrimitiveType);
 
             MascaretPrimitiveType stringPrimitiveType = new MascaretPrimitiveType("string");
             basicTypes.Add("string", stringPrimitiveType);

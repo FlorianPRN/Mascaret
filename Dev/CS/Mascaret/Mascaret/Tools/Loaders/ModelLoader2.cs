@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 
 //VERIFIER SI TOUT A BESOIN DETRE SERIALIZER OU NON!!!!!
@@ -166,6 +167,8 @@ namespace Mascaret
 
         private Dictionary<String, String> _subStatesID;
 
+        private Dictionary<String, String> _primitiveTypes;
+
         //default parameter strIsFileName=true;
         public ModelLoader2(string str, bool strIsFileName)
         {
@@ -191,6 +194,7 @@ namespace Mascaret
             _subStateMachines = new Dictionary<string, StateMachine>();
             _subStates = new Dictionary<string, State>();
             _subStatesID = new Dictionary<string, string>();
+            _primitiveTypes = new Dictionary<string, string>();
             _loader = new XDocument();
 
             try
@@ -242,7 +246,7 @@ namespace Mascaret
 
                         MascaretApplication.Instance.addModel(model);
 
-
+                        getPrimitiveType(modelNode);
                         addStereotypes();
 
                         addPackage(modelNode, null);
@@ -268,6 +272,13 @@ namespace Mascaret
             }
 
             // Bouml preserved body end 0001F4E7
+        }
+
+        void getPrimitiveType(XElement modelNode)
+        {
+            List<XElement> primitives = modelNode.Elements("packagedElement").Where(x => (string)x.Attribute("{http://schema.omg.org/spec/XMI/2.1}type") == "uml:PrimitiveType").ToList();
+            foreach (XElement p in primitives)
+                _primitiveTypes.Add(p.Attribute("{http://schema.omg.org/spec/XMI/2.1}id").Value, p.Attribute("name").Value);
         }
 
         void addPackage(XElement packageNode, Package parent)
@@ -1405,10 +1416,15 @@ namespace Mascaret
                         {
                             // Check if it's an attribute
                             string typeId = pins.Attribute("type").Value;
+                            if (_primitiveTypes.ContainsKey(typeId))
+                                strType = _primitiveTypes[typeId];
                         }
-                        XAttribute attr = (XAttribute)typeNode.Attribute("href");
-                        if (attr != null) strType = attr.Value.Substring(attr.Value.IndexOf("#") + 1);
-
+                        else
+                        {
+                            XAttribute attr = (XAttribute)typeNode.Attribute("href");
+                            if (attr != null)
+                                strType = attr.Value.Substring(attr.Value.IndexOf("#") + 1);
+                        }
                         MascaretPrimitiveType attributeType = model.getBasicType(strType.ToLower());
 
                         valuePin.ResourceType = attributeType;
@@ -1458,9 +1474,6 @@ namespace Mascaret
                 }
             }
         }
-
-
-
 
         public void _addParameters(Operation op, XElement opNode)
         {
